@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import environ # 追加
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -28,6 +29,12 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
+# AWSにデプロイするため追加
+env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, '.env'))
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env('DEBUG')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'MyApp_app'
+    'MyApp_app',
+    'MyApp_app.apps.MyApp_appConfig' # 追加
 ]
 
 MIDDLEWARE = [
@@ -75,11 +83,8 @@ WSGI_APPLICATION = 'MyApp_project.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    'default': env.db(),
     }
-}
 
 
 # Password validation
