@@ -1,0 +1,28 @@
+{% extends 'MyApp/base.html' %}
+{% block content %}
+
+<div class="container" style="margin-top: 20px;  margin-left: 20px;">
+    <p><font size="5">発明内容</font></p>
+    <p style="background:#fcfcff; padding:15px; border:1px solid #3b5998; width:50%; word-break:break-all;">{{text}}</p>
+    <p><font size="5">国際特許分類</font></p>
+    <table rules="rows" cellspacing="1"  class='table'>
+        <tr>
+            <th>特許分類</th>
+            <th>説明</th>
+            <th>信頼度</th>
+        </tr>
+        {% for i in pred_list %}
+        <tr>
+            <td>{{i.0}}</td>
+            <td>{{i.2}}</td>
+            <td>{{i.1}}%</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'textinput' %}" style="color:darkgreen;">
+        <button type="button" class="btn btn-success" style="margin-top: 40px;">
+            発明内容入力画面に戻る
+        </button>
+    </a>
+</div>
+{% endblock %}

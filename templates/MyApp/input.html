@@ -1,0 +1,13 @@
+{% extends 'MyApp/base.html' %}
+{% block content %}
+
+<div class="container" style="margin-top: 20px; margin-left: 5px;">
+    <form action="" method="POST", class="form">
+        <p style="margin-top: 50px;">発明内容（最大500文字）を入力して送信ボタンをクリックしてください。</p>
+        {% csrf_token %}
+        <label for="text-input">発明内容：</label>
+        <p><textarea name="text" rows="5" cols="40" value="" maxlength="500" id="text-input" required></textarea></p>
+        <button type="submit" class="btn btn-success" style="margin-top: 20px;" id="submit">送信</button>
+    </form>
+</div>
+{% endblock %}
