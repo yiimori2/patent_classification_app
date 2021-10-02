@@ -10,30 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import environ # 追加
 import os
+import environ
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+env = environ.Env(DEBUG=(bool, False))
+env.read_env('.env')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'kw%kzs&9z)nb_98disy5&)b9st+(s90#x60=5d*6*_p2=tk#%l'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.get_value('DEBUG',cast=bool,default=False)
 
 ALLOWED_HOSTS = ['*']
 
-
-# AWSにデプロイするため追加
-env = environ.Env()
-env.read_env(os.path.join(BASE_DIR, '.env'))
-SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG')
 
 # Application definition
 
@@ -44,8 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'MyApp_app',
-    'MyApp_app.apps.MyApp_appConfig' # 追加
+    'MyApp_app'
 ]
 
 MIDDLEWARE = [
@@ -83,9 +72,8 @@ WSGI_APPLICATION = 'MyApp_project.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db(),
-    }
-
+    'default':env.db(),
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
