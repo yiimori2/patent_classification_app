@@ -10,17 +10,21 @@ import pandas as pd
 import torch
 import pickle
 import sqlite3
-from model.net_structure import Net_section_classifier, Net_subclass_classifier
+import sys, os
+sys.path.append("/Users/yukiiimori/Desktop/MyApp/MyApp_project/model/sixty_thou")
+from net_structure import Net_section_classifier, Net_subclass_classifier, config
+
 # テキストの前処理
 import MeCab
 import mojimoji
 import re
 
 #----- modelのload -----
-base_dir_vec = 'model/vectorizer/'
-base_dir_cate = 'model/categories/'
-base_dir_net = 'model/net/'
-base_dir_IPC = 'model/IPC_A-Hsection/IPC_Ver2021-A-Hsection.db'
+base_dir_name = 'sixty_thou' # dataを読み込むdirectoryを変えるにはここを変更
+base_dir_vec = f'model/{base_dir_name}/vectorizer/'
+base_dir_cate = f'model/{base_dir_name}/categories/'
+base_dir_net = f'model/{base_dir_name}/net/'
+base_dir_IPC = f'model/IPC_A-Hsection/IPC_Ver2021-A-Hsection.db'
 
 # (1) text -> sections
 # vectorizer
@@ -77,14 +81,14 @@ for path in categories_paths:
 
 # NN
 model_paths = [
-  'Net_classify_A_section_subclass_20210920.pth',
-  'Net_classify_B_section_subclass_20210920.pth',
-  'Net_classify_C_section_subclass_20210920.pth',
-  'Net_classify_D_section_subclass_20210920.pth',
-  'Net_classify_E_section_subclass_20210920.pth',
-  'Net_classify_F_section_subclass_20210920.pth',
-  'Net_classify_G_section_subclass_20210920.pth',
-  'Net_classify_H_section_subclass_20210920.pth',
+  'Net_classify_A_section_subclass.pth',
+  'Net_classify_B_section_subclass.pth',
+  'Net_classify_C_section_subclass.pth',
+  'Net_classify_D_section_subclass.pth',
+  'Net_classify_E_section_subclass.pth',
+  'Net_classify_F_section_subclass.pth',
+  'Net_classify_G_section_subclass.pth',
+  'Net_classify_H_section_subclass.pth',
 ]
 model_subclass = []
 for i, path in enumerate(model_paths):
@@ -93,7 +97,7 @@ for i, path in enumerate(model_paths):
   categories = categories_dict_subclass[i]
   n_feats = len(vectorizer.vocabulary_)
   n_classes = len(categories)
-  model = Net_subclass_classifier(n_feats, n_classes)
+  model = Net_subclass_classifier(n_feats, n_classes, config)
   model.load_state_dict(torch.load(path))
   model_subclass.append(model)
 
@@ -178,7 +182,8 @@ def predict(text, vectorizer, model, device, below_threshold=False):
   model = model.to(device)
   model.eval()
   model.freeze()
-  _, proba = model(inputs.unsqueeze(dim=0).to(device))
+  # _, proba = model(inputs.unsqueeze(dim=0).to(device))
+  _, proba = model(inputs.to(device))
   proba = proba.detach().cpu().squeeze()
   # 閾値以上の値を1、それ以外を0にする
   THRESHOLD = 0.5
