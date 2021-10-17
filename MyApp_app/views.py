@@ -97,7 +97,9 @@ for i, path in enumerate(model_paths):
   n_feats = len(vectorizer.vocabulary_)
   n_classes = len(categories)
   model = Net_subclass_classifier(n_feats, n_classes, config)
-  model.load_state_dict(torch.load(path))
+  # deviceをcpuに指定
+  model.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
+  # model.load_state_dict(torch.load(path))
   model_subclass.append(model)
 
 # ストップワード
@@ -179,7 +181,9 @@ def predict(text, vectorizer, model, device, below_threshold=False):
   inputs = torch.tensor(text, dtype=torch.float32)
   # modelで予測
   model = model.to(device)
-  model.eval()
+  # モデルをCPUに送る。AWSの容量の関係で、torchはcpu版とし、torch cpu版で推論させるため。
+  model.eval().cpu()
+  # model.eval()
   model.freeze()
   # _, proba = model(inputs.unsqueeze(dim=0).to(device))
   _, proba = model(inputs.to(device))
