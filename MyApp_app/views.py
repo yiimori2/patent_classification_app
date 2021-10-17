@@ -12,7 +12,7 @@ import pickle
 import sqlite3
 import sys, os
 sys.path.append("/Users/yukiiimori/Desktop/MyApp/MyApp_project/model/sixty_thou")
-from net_structure import Net_section_classifier, Net_subclass_classifier, config
+from model.net_structure import Net_section_classifier, Net_subclass_classifier, config
 
 # テキストの前処理
 import MeCab
@@ -20,10 +20,9 @@ import mojimoji
 import re
 
 #----- modelのload -----
-base_dir_name = 'sixty_thou' # dataを読み込むdirectoryを変えるにはここを変更
-base_dir_vec = f'model/{base_dir_name}/vectorizer/'
-base_dir_cate = f'model/{base_dir_name}/categories/'
-base_dir_net = f'model/{base_dir_name}/net/'
+base_dir_vec = f'model/vectorizer/'
+base_dir_cate = f'model/categories/'
+base_dir_net = f'model/net/'
 base_dir_IPC = f'model/IPC_A-Hsection/IPC_Ver2021-A-Hsection.db'
 
 # (1) text -> sections
