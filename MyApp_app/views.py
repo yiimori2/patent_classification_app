@@ -171,7 +171,7 @@ def predict(text, vectorizer, model, device, below_threshold=False):
   input: below_threshold: probaの要素が全て閾値以下となり、
   predがゼロ配列になる場合に、probaが最大の要素を1、それ以外を0とする配列を出力するか
   output: pred: 特許分類（文字列）を格納したリスト
-  output: proba: 各特許運類の信頼度（整数値）を格納したリスト
+  output: proba: 各特許分類の信頼度（整数値）を格納したリスト
   """
   # 前処理
   text = preprocessing(text)
@@ -216,7 +216,7 @@ def inference(text):
   # predictionから1のフラグが立っているindex（section）を取得
   section_list = list(np.where(prediction==1)[0])
 
-  # IPCと信頼度を格納するリスト
+  # 特許分類と信頼度を格納するリスト
   pred = []
   proba = []
 
@@ -255,10 +255,11 @@ def text_input(request):
       # 辞書に格納し、信頼度が大きい順にソート
       pred_dict = {k: v for k, v in zip(pred, proba)}
       pred_list = sorted(pred_dict.items(), key=lambda x:x[1], reverse=True)
-      # pred_listの要素にIPCのタイトルを追加。(IPC, 信頼度, タイトル)。
+      # pred_listの要素に特許分類のタイトルを追加。(特許分類, 信頼度, タイトル)。
+      # pred_listの要素に特許分類のタイトルを追加。(特許分類, 信頼度, タイトル)。
       conn = sqlite3.connect(base_dir_IPC)
       for i, item in enumerate(pred_list):
-        # IPCに対応するタイトルを取得
+        # 特許分類に対応するタイトルを取得
         sql = f"select * from IPC where  記号 = '{item[0]}'"
         title = pd.read_sql_query(sql, conn).iloc[0, -1]
         pred_list[i] = item + (title, )
