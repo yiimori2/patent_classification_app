@@ -133,7 +133,7 @@ def signup(request):
                 login(request, new_user)
                 return redirect('textinput')
 
-        # フォーム入力内容が適切でなかった場合の処理（自分で追加）
+        # フォーム入力内容が適切でなかった場合の処理
         else:
             form = SignUpForm()
             return render(request, 'MyApp/signup.html', {'form': form})
